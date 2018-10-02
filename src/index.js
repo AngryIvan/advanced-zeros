@@ -2,22 +2,21 @@ module.exports = function getZerosCount(number, base) {
     let index = 1,
         zeros = 0,
         zerosArr = [];
-    let power = 1;
+    let power = [];
     let result = [];
-    let curNum = base;
     let probe = 2;
 
-    while (curNum != 1) {
-        if (curNum % probe != 0) {
+    //finding prime numbers
+    while (base != 1) {
+        if (base % probe != 0) {
             probe++;
         } else {
-            curNum /= probe;
+            base /= probe;
             result.push(probe);
         }
     }
 
-    console.log(result);
-
+    //counting zeros
     for (let i = 0; i < result.length; i++) {
         while (Math.floor(number / Math.pow(result[i], index)) != 0) {
             zeros += Math.floor(number / Math.pow(result[i], index));
@@ -28,25 +27,22 @@ module.exports = function getZerosCount(number, base) {
         zeros = 0;
     }
 
-    console.log(zerosArr);
 
-    let place = [];
+    //in case of repeating prime numbers 
     for (let i = 0; i < zerosArr.length; i++) {
-        if (zerosArr[i] == zerosArr[i + 1]) {
-            power++;
-            place.push(i);
+        power[i] = 0;
+        for (let j = 0; j < zerosArr.length; j++) {
+            if (zerosArr[i] == zerosArr[j]) {
+                power[i]++;
+
+            }
         }
+        zerosArr.splice(i, power[i], Math.floor(zerosArr[i]));
 
     }
-
-    zerosArr[place[0]] = Math.floor(zerosArr[place[0]] / power);
-
-    let min = zerosArr[0];
-    let max = min;
-    for (i = 1; i < zerosArr.length; ++i) {
-        if (zerosArr[i] > max) max = zerosArr[i];
-        if (zerosArr[i] < min) min = zerosArr[i];
+    for (let i = 0; i < zerosArr.length; i++) {
+        zerosArr[i] = Math.floor(zerosArr[i] / power[i]);
     }
 
-    return min;
+    return Math.min.apply(null, zerosArr);
 }
